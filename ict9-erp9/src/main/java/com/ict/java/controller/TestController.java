@@ -1,13 +1,19 @@
 package com.ict.java.controller;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.ict.java.service.TestService;
 import com.ict.java.vo.TestVo;
 
 import lombok.extern.slf4j.Slf4j;
@@ -16,9 +22,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TestController {
 
+	@Autowired
+	private TestService ts;
+	
+	
 	@GetMapping("/tests")
-	public String test() {
-		return "tests";
+	public @ResponseBody List<TestVo> test() {
+		return ts.getTestList();
 	}
 	
 	@GetMapping("/tests/1")		
@@ -37,7 +47,8 @@ public class TestController {
 	
 	
 	@PostMapping("/tests")
-	public String tests(@ModelAttribute TestVo tvo, Model m) {
+	@ResponseBody			// 글자 자체가 리턴되게 된다 안썼을떄는 뒤의 .jsp 등이 추가 됨
+	public String tests(@RequestBody TestVo tvo, Model m) {
 		log.debug("param tvo=>{}",tvo);
 		m.addAttribute("tvo",tvo);
 		return "tests";
